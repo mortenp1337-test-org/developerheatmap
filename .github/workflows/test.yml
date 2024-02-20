@@ -1,0 +1,32 @@
+name: Get Repo Activity
+
+on:
+  workflow_dispatch:
+    
+
+jobs:
+  get-repo-activity:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get GitHub App Installation Access Token
+        id: get-token
+        uses: peter-murray/github-app-token@v1
+        with:
+          app_id: ${{ secrets.GITHUB_APP_ID }}
+          private_key: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
+
+      - name: Get Repo Activity
+        run: |
+          curl -H "Authorization: token ${{ steps.get-token.outputs.token }}" \
+               -H "Accept: application/vnd.github+json" \
+               https://api.github.com/repos/microsoft/vscode/events > activity.json
+
+      - name: Upload Activity Data
+        uses: actions/upload-artifact@v2
+        with:
+          name: activity
+          path: activity.json
