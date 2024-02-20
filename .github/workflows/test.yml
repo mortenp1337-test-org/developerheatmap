@@ -25,6 +25,10 @@ jobs:
                -H "Accept: application/vnd.github+json" \
                https://api.github.com/repos/microsoft/vscode/events > activity.json
 
+      - name: output
+        run: |
+          cat activity.json
+
       - name: Upload Activity Data
         uses: actions/upload-artifact@v2
         with:
